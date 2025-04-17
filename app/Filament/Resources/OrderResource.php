@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use App\Enums\RolesEnum;
+use Filament\Facades\Filament;
 
 class OrderResource extends Resource
 {
@@ -210,6 +211,13 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        $user = Filament::auth()->user();
+        return $user && $user instanceof User && $user->hasRole(RolesEnum::Admin);
+    }
+    
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()

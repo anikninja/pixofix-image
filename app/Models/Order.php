@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Employee;
 use App\Models\OrderItems;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 /**
  * Class Order
  *
@@ -26,7 +28,7 @@ use App\Models\Category;
 
 class Order extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
     protected $fillable = [
         'order_number',
         'order_date',
