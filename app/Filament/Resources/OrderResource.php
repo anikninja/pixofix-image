@@ -25,6 +25,10 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Order Management';
+    
+    protected static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -104,16 +108,13 @@ class OrderResource extends Resource
                             ->afterStateUpdated(function($state, callable $set){
                                 $set('slug', Str::slug($state));
                         }),
+                        Forms\Components\TextInput::make('slug')
+                            ->required(),
                         Forms\Components\Select::make('parent_id')
                             ->options(fn (Forms\Get $get) => Category::where('parent_id', $get('category_id'))
                             ->pluck('name', 'id'))
                             ->label('Parent Category')
-                            ->searchable(),
-                        Forms\Components\TextInput::make('slug')
-                            ->required(),
-                        Forms\Components\TextInput::make('description')
-                            ->label('Description')
-                            ->maxLength(65535),
+                            ->searchable(),                        
                     ])
                     ->required(),
                     // Forms\Components\Repeater::make('orderItems')
