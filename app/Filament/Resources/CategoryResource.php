@@ -16,10 +16,9 @@ use Illuminate\Support\Str;
 use App\Enums\RolesEnum;
 use App\Models\User;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard\Step;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 
 class CategoryResource extends Resource
 {
@@ -35,8 +34,8 @@ class CategoryResource extends Resource
     {
         return $form->schema([
             Forms\Components\Wizard::make([
-                Step::make('Name')
-                    ->description('Category name')
+                Step::make('Category Name')
+                    ->description('Category Information')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -50,9 +49,11 @@ class CategoryResource extends Resource
                             ->rows(3)
                     ]),
                 Step::make('Parent Category')
-                    ->description('Select a parent category')
+                    ->description('Select parent category')
                     ->schema([
                         Forms\Components\Select::make('parent_id')
+                            ->placeholder('Select Parent Category')
+                            ->helperText('* Leave this field empty if the category does not have a parent category.')
                             ->options(fn (Forms\Get $get) => Category::where('parent_id', $get('category_id'))
                             ->pluck('name', 'id'))
                             ->label('Parent Category')
@@ -64,7 +65,9 @@ class CategoryResource extends Resource
 
     public static function table(Table $table): Table
     {
+        
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
@@ -88,9 +91,13 @@ class CategoryResource extends Resource
                 tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -101,6 +108,28 @@ class CategoryResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\TextEntry::make('name')
+                    ->label('Category Name'),
+                Infolists\Components\TextEntry::make('slug')
+                    ->label('Slug'),
+                Infolists\Components\TextEntry::make('parent_id')
+                    ->label('Parent Category')
+                    ->getStateUsing(fn ($record) => Category::find($record->parent_id)?->name ?? 'None'),
+                Infolists\Components\TextEntry::make('description')
+                    ->label('Description')
+                    ->columnSpanFull(),
+                Infolists\Components\TextEntry::make('created_at')
+                    ->label('Created At')
+                    ->dateTime(),
+                Infolists\Components\TextEntry::make('updated_at')
+                    ->label('Updated At')
+                    ->dateTime(),
+            ]);
+    }
     public static function getRelations(): array
     {
         return [

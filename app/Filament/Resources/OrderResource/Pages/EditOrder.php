@@ -13,9 +13,12 @@ class EditOrder extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
-            Actions\ForceDeleteAction::make(),
+            Actions\ViewAction::make(),
             Actions\RestoreAction::make(),
+            Actions\ActionGroup::make([
+                Actions\DeleteAction::make(),
+                Actions\ForceDeleteAction::make(),
+            ])->label('Actions'),
         ];
     }
 }
