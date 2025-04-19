@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeOrderResource\Pages;
 use App\Filament\Resources\EmployeeOrderResource\RelationManagers;
-use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Components;
+use Filament\Forms\Components\Card;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItems;
@@ -26,6 +28,10 @@ class EmployeeOrderResource extends Resource
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationLabel = 'My Orders';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $slug = 'my-order';
+    protected static ?string $recordTitleAttribute = 'order_number';
+    protected static ?string $label = 'My Order';
+    protected static ?string $pluralLabel = 'My Orders';
 
     public static function getNavigationBadge(): ?string
     {
@@ -45,7 +51,28 @@ class EmployeeOrderResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Card::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('order_number')
+                            ->label('Order Number')
+                            ->disabled(),
+                        Forms\Components\TextInput::make('order_date')
+                            ->label('Order Date')
+                            ->disabled(),
+                        Forms\Components\TextInput::make('status')
+                            ->label('Status')
+                            ->formatStateUsing(fn ($state) => ucfirst($state))
+                            ->disabled(),
+                        Forms\Components\TextInput::make('category_id')
+                            ->label('Category')
+                            ->formatStateUsing(fn ($state) => Category::find($state)->name ?? 'Unknown')
+                            ->disabled(),
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Notes')
+                            ->disabled()
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2)
             ]);
     }
     
@@ -233,14 +260,14 @@ class EmployeeOrderResource extends Resource
                                 ->size(100) // Adjusted size
                                 ->circular()
                                 ->columnSpanFull(),
-                ])->columnSpanFull()
+                ])->columnSpanFull(),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\OrderItemsRelationManager::class,
         ];
     }
 

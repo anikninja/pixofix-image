@@ -44,8 +44,11 @@ class EditEmployeeOrder extends EditRecord
     }
     protected function getHeaderActions(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
+    protected function getFormActions(): array
+    {
+        return [];
+    }
+    
 }
