@@ -15,7 +15,7 @@ class EmployeeOrderStatus extends BaseWidget
     protected int | string | array $columnSpan = 'full';
     public static function canView(): bool
     {
-        return Auth::check() && Auth::user()->hasRole(RolesEnum::Employee->value);
+        return Auth::check() && Auth::user()->hasRole(RolesEnum::Employee);
     }
     protected function getStats(): array
     {

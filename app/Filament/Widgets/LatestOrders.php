@@ -8,6 +8,9 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use App\Models\Order;
 use App\Enums\RolesEnum;
 use Illuminate\Support\Facades\Auth;
+use App\Models\OrderItems;
+use Filament\Tables\Columns\ImageColumn;
+
 
 class LatestOrders extends BaseWidget
 {
@@ -46,6 +49,16 @@ class LatestOrders extends BaseWidget
                 $this->getTableQuery()
             )
             ->columns([
+                ImageColumn::make('images')
+                        ->getStateUsing(function ($record) {
+                            return OrderItems::where('order_id', $record->id)->pluck('upload');
+                        })
+                        ->default('https://fakeimg.pl/600x400?text=No+Image&font=bebas')
+                        ->size(40)
+                        ->circular()
+                        ->stacked()
+                        ->limit(3)
+                        ->limitedRemainingText(),
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('Order ID')
                     ->searchable(),
@@ -58,7 +71,7 @@ class LatestOrders extends BaseWidget
                         'claimed' => 'gray',
                         'processing' => 'info',
                         'completed' => 'success',
-                        'canceled' => 'danger',
+                        'cancelled' => 'danger',
                     })
                     ->formatStateUsing(function (string $state) {
                         return ucfirst($state);
@@ -72,65 +85,6 @@ class LatestOrders extends BaseWidget
                     ->since()
                     ->dateTimeTooltip()
                     ->alignRight(),
-                ]);
-            //TODO: Add actions to the table fix this
-            // ->actions([
-            //     // Claim Order action
-            //     Tables\Actions\Action::make('claim')
-            //         ->label('Claim Order')
-            //         ->action(function (Order $record): void {
-            //             if ($record->status !== 'pending') {
-            //                 return;
-            //             }
-            //             $record->update(['status' => 'claimed', 'employee_id' => Auth::user()->employee->id]);
-            //         })
-            //         ->requiresConfirmation()
-            //         ->modalHeading(fn (Order $record): string => 'Confirm Claim for Order "' . $record->order_number . '"')
-            //         ->modalSubheading('Are you sure you want to claim this order?')
-            //         ->modalButton('Yes, Claim')
-            //         ->color('warning')
-            //         ->icon('heroicon-o-arrow-down-tray')
-            //         ->disabled(fn (Order $record): bool => $record->status !== 'pending')
-            //         ->hidden(fn (Order $record): bool => $record->status !== 'pending'),
-
-            //     // Mark as Processing action
-            //     Tables\Actions\Action::make('mark_processing')
-            //         ->label('Mark as Processing')
-            //         ->action(function (Order $record): void {
-            //             if ($record->status !== 'claimed') {
-            //                 return;
-            //             }
-            //             $record->update(['status' => 'processing']);
-            //         })
-            //         ->requiresConfirmation()
-            //         ->modalHeading(fn (Order $record): string => 'Confirm Mark as Processing for Order "' . $record->order_number . '"')
-            //         ->modalSubheading('Are you sure you want to mark this order as processing?')
-            //         ->modalButton('Yes, Mark as Processing')
-            //         ->color('info')
-            //         ->icon('heroicon-o-arrow-right-start-on-rectangle')
-            //         ->disabled(fn (Order $record): bool => $record->status !== 'claimed')
-            //         ->hidden(fn (Order $record): bool => $record->status !== 'claimed'),
-            //     // Mark as Completed action
-            //     Tables\Actions\Action::make('mark_completed')
-            //         ->label('Mark as Completed')
-            //         ->action(function (Order $record): void {
-            //             if ($record->status !== 'processing') {
-            //                 return;
-            //             }
-            //             $record->update(['status' => 'completed']);
-            //         })
-            //         ->requiresConfirmation()
-            //         ->modalHeading(fn (Order $record): string => 'Confirm Mark as Completed for Order "' . $record->order_number . '"')
-            //         ->modalSubheading('Are you sure you want to mark this order as completed?')
-            //         ->modalButton('Yes, Mark as Completed')
-            //         ->color('success')
-            //         ->icon('heroicon-o-check-circle')
-            //         ->disabled(fn (Order $record): bool => $record->status !== 'processing')
-            //         ->hidden(fn (Order $record): bool => $record->status !== 'processing'),
-            //     Tables\Actions\EditAction::make()
-            //         ->label('View'),
-            //         //->url(fn (Order $record): string => route('filament.resources.orders.view', $record)),
-                
-            // ]);
+            ]);
     }
 }

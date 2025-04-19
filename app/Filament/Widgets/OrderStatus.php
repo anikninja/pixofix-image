@@ -17,7 +17,7 @@ class OrderStatus extends BaseWidget
 
     public static function canView(): bool
     {
-        return Auth::check() && Auth::user()->hasRole(RolesEnum::Admin->value);
+        return Auth::check() && Auth::user()->hasRole(RolesEnum::Admin);
     }
     protected function getStats(): array
     {

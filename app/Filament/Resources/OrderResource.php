@@ -64,7 +64,7 @@ class OrderResource extends Resource
                         'claimed' => 'Claimed',
                         'processing' => 'Processing',
                         'completed' => 'Completed',
-                        'canceled' => 'Canceled',
+                        'cancelled' => 'Cancelled',
                     ]),
                 Forms\Components\Textarea::make('notes') 
                     ->maxLength(65535),
@@ -142,7 +142,7 @@ class OrderResource extends Resource
                         'claimed' => 'gray',
                         'processing' => 'info',
                         'completed' => 'success',
-                        'canceled' => 'danger',
+                        'cancelled' => 'danger',
                     })
                     ->formatStateUsing(function (string $state) {
                         return ucfirst($state);
@@ -175,9 +175,9 @@ class OrderResource extends Resource
                 tables\Filters\Filter::make('completed')
                     ->query(fn (Builder $query): Builder => $query->where('status', 'completed'))
                     ->label('Completed'),
-                tables\Filters\Filter::make('canceled')
-                    ->query(fn (Builder $query): Builder => $query->where('status', 'canceled'))
-                    ->label('Canceled'),
+                tables\Filters\Filter::make('cancelled')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'cancelled'))
+                    ->label('cancelled'),
                 tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
@@ -194,7 +194,6 @@ class OrderResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-
     }
 
     public static function infolist(Infolist $infolist): Infolist
@@ -218,7 +217,7 @@ class OrderResource extends Resource
                                         'claimed' => 'gray',
                                         'processing' => 'info',
                                         'completed' => 'success',
-                                        'canceled' => 'danger',
+                                        'cancelled' => 'danger',
                                     }),
                                 Infolists\Components\TextEntry::make('employee.name')
                                     ->label('Assigned Employee'),
