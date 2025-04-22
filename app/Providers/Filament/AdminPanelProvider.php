@@ -32,7 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile()
             ->databaseNotifications()
-            ->databaseNotificationsPolling('10s');
+            ->databaseNotificationsPolling('10s')
             ->colors([
                 'primary' => Color::Cyan,
                 'danger' => Color::Rose,
