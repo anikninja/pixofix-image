@@ -47,6 +47,20 @@ class Employee extends Model
     }
     
     /**
+     * Find Employee user by ID or return all users associated with the user_id column.
+     * @param mixed $id
+     */
+    public static function findEmployee(?int $id = null)
+    {
+        if (is_null($id)) {
+            return self::with('user')->get()->pluck('user')->all();
+        }
+        else {
+            return self::find($id)?->user()->first();
+        }
+    }
+    
+    /**
      * Summary of saveWithUser
      * @param \App\Models\User $user
      * @return void
