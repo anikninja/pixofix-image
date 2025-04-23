@@ -19,7 +19,7 @@ class OrderFactory extends Factory
         return [
             'order_number' => $this->generateOrderNumber(),
             'order_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'status' => $this->faker->randomElement(['pending', 'claimed', 'completed']),
+            'status' => 'pending',
             'notes' => $this->faker->optional()->sentence(),
             'employee_id' => null,
             'category_id' => null,

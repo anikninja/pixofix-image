@@ -25,12 +25,7 @@ class CreateOrder extends CreateRecord
         $notification = Notification::make()
             ->title($this->record->employee_id ? 'New Order Assigned' : 'New Order Created')
             ->body('Order: ' . $this->record->order_number . ($this->record->employee_id ? ' has been assigned to you.' : ' has been created.'))
-            ->icon($this->record->employee_id ? 'heroicon-o-user' : 'heroicon-o-check-circle')
-            ->actions([
-                Action::make('view')
-                ->button()
-                ->markAsRead()
-            ]);
+            ->icon($this->record->employee_id ? 'heroicon-o-user' : 'heroicon-o-check-circle');
 
         return $notification->sendToDatabase($recipient, isEventDispatched: true);
     }
