@@ -87,8 +87,8 @@ class OrderResource extends Resource
                     ->afterStateUpdated(function ($state, callable $set) {
                         // Find the user by ID and create an employee if it doesn't exist
                         // and assign the employee ID to the order
-                        if ($state && Employee::find($state)) {
-                            $set('employee_id', $state);
+                        if ($state && $employee = Employee::where('user_id', $state)->first()) {
+                            $set('employee_id', $employee->id);
                         } 
                         else if ($user = User::find($state)) {
                             $employee = Employee::where('user_id', $user->id)->first();
