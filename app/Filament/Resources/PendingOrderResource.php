@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -64,7 +65,6 @@ class PendingOrderResource extends Resource
     public static function table(Table $table): Table
     {
         $table->defaultSort('order_date', 'desc');
-
         return $table
             ->query(
                 self::getTableQuery()
@@ -112,8 +112,23 @@ class PendingOrderResource extends Resource
                             $record->employee_id = Auth::user()->employee->id;
                             $record->status = 'claimed'; // Update the status to 'claimed'
                             $record->save();
-                            // Optionally, you can send a notification or perform other actions
-                            // Filament::notify('success', 'Order claimed successfully.');
+                            // Send a notification to all admin user about the order claim
+                            Notification::make()
+                                ->title('Order Claimed')
+                                ->body('Order "' . $record->order_number . '" has been claimed by ' . Auth::user()->name)
+                                ->icon('heroicon-o-clipboard-document-check')
+                                ->broadcast(User::findAdmin())
+                                ->warning()
+                                ->sendToDatabase(User::findAdmin(), isEventDispatched: true);
+                            // Optionally, you can redirect the user or show a success message
+                            Notification::make()
+                                ->title('Order Claimed')
+                                ->body('You have successfully claimed the order "' . $record->order_number . '"')
+                                ->icon('heroicon-o-clipboard-document-check')
+                                ->success()
+                                ->broadcast(Auth::user())
+                                ->sendToDatabase(Auth::user(), isEventDispatched: true);
+
                         })
                         ->requiresConfirmation()
                         ->color('warning')
@@ -133,6 +148,21 @@ class PendingOrderResource extends Resource
                                 $record->status = 'claimed';
                                 $record->save();
                             }
+                            // Send a notification to all admin user about the order claim
+                            Notification::make()
+                                ->title('Orders Claimed')
+                                ->body('Orders have been claimed by ' . Auth::user()->name)
+                                ->icon('heroicon-o-clipboard-document-check')
+                                ->broadcast(User::findAdmin())
+                                ->sendToDatabase(User::findAdmin(), isEventDispatched: true);
+                            // Optionally, send notification to the user or show a success message
+                            Notification::make()
+                                ->title('Orders Claimed')
+                                ->body('You have successfully claimed the selected orders')
+                                ->icon('heroicon-o-clipboard-document-check')
+                                ->success()
+                                ->broadcast(Auth::user())
+                                ->sendToDatabase(Auth::user(), isEventDispatched: true);
                         })
                         ->requiresConfirmation()
                         ->color('warning')

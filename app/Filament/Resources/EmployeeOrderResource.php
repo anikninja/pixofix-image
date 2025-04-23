@@ -10,6 +10,7 @@ use Filament\Forms\Components\Card;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItems;
+use App\Models\User;
 use App\Enums\RolesEnum;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -20,6 +21,8 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
+
 
 class EmployeeOrderResource extends Resource
 {
@@ -151,7 +154,13 @@ class EmployeeOrderResource extends Resource
                     Tables\Actions\Action::make('Claim Order')
                         ->action(function ($record) {
                             $record->update(['status' => 'claimed']);
-                            // Filament::notify('success', 'Order claimed successfully.');
+                            // Send a notification to all admin user about the order claim
+                            Notification::make()
+                                ->title('Order Claimed')
+                                ->body('Order "' . $record->order_number . '" has been claimed by ' . Auth::user()->name)
+                                ->icon('heroicon-o-clipboard-document-check')
+                                ->warning()
+                                ->sendToDatabase(User::findAdmin(), isEventDispatched: true);
                         })
                         ->requiresConfirmation()
                         ->color('warning')
@@ -165,7 +174,13 @@ class EmployeeOrderResource extends Resource
                     Tables\Actions\Action::make('Mark as Processing')
                         ->action(function ($record) {
                             $record->update(['status' => 'processing']);
-                            // Filament::notify('success', 'Order Processing successfully.');
+                            // Send a notification to all admin user about the order processing
+                            Notification::make()
+                                ->title('Order Processing')
+                                ->body('Order "' . $record->order_number . '" is now being processed by ' . Auth::user()->name)
+                                ->icon('heroicon-o-clipboard-document-check')
+                                ->info()
+                                ->sendToDatabase(User::findAdmin(), isEventDispatched: true);
                         })
                         ->requiresConfirmation()
                         ->color('info')
@@ -179,7 +194,13 @@ class EmployeeOrderResource extends Resource
                     Tables\Actions\Action::make('Mark as Completed')
                         ->action(function ($record) {
                             $record->update(['status' => 'completed']);
-                            //Filament::notify('success', 'Order Completed successfully.');
+                            // Send a notification to all admin user about the order completion
+                            Notification::make()
+                                ->title('Order Completed')
+                                ->body('Order "' . $record->order_number . '" has been completed by ' . Auth::user()->name)
+                                ->icon('heroicon-o-clipboard-document-check')
+                                ->success()
+                                ->sendToDatabase(User::findAdmin(), isEventDispatched: true);
                         })
                         ->requiresConfirmation()
                         ->color('success')
@@ -194,7 +215,13 @@ class EmployeeOrderResource extends Resource
                         ->icon('heroicon-o-x-circle')
                         ->action(function ($record) {
                             $record->update(['status' => 'cancelled']);
-                            //Filament::notify('success', 'Order cancelled successfully.');
+                            // Send a notification to all admin user about the order cancellation
+                            Notification::make()
+                                ->title('Order Cancelled')
+                                ->body('Order "' . $record->order_number . '" has been cancelled by ' . Auth::user()->name)
+                                ->icon('heroicon-o-x-circle')
+                                ->danger()
+                                ->sendToDatabase(User::findAdmin(), isEventDispatched: true);
                         })
                         ->requiresConfirmation()
                         ->color('danger')
@@ -206,8 +233,7 @@ class EmployeeOrderResource extends Resource
                 ])
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                ]),
+                //
             ]);
     }
 

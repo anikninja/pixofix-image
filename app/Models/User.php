@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Enums\RolesEnum;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -51,5 +53,23 @@ class User extends Authenticatable implements MustVerifyEmail
     public function employee()
     {
         return $this->hasOne(Employee::class);
+    }
+
+    /**
+     * Summary of findAdmin
+     * @param mixed $id
+     * @return User|User[]|null
+     */
+    public static function findAdmin(?int $id = null)
+    {
+        $query = self::whereHas('roles', function ($query) {
+            $query->where('name', RolesEnum::Admin);
+        });
+
+        if (is_null($id)) {
+            return $query->get()->all();
+        }
+
+        return $query->where('id', $id)->first();
     }
 }
