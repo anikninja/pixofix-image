@@ -13,8 +13,17 @@ A demo web-based application using Laravel that facilitates the management of pr
 https://drive.google.com/file/d/1cIpdkUNAQQOubQr5bX-8q5_IiF_VtQRy/view?usp=sharing
 
 
-
 ## Installation
+
+New Laravel application? make sure that your local machine has `PHP`, `Composer`, `Node`, `NPM` and the `Laravel installer` installed.
+
+Read Doc: [Installing PHP and the Laravel Installer](https://laravel.com/docs/12.x/installation#installing-php)
+
+Install the Laravel installer via Composer:
+
+```sh
+composer global require laravel/installer
+```
 
 Clone the repo locally:
 
@@ -65,13 +74,21 @@ Run database seeder:
 php artisan db:seed
 ```
 
+Run optimization:
+
+```sh
+php artisan optimize
+```
+
 Run server:
 
 ```sh
 composer run dev
 ```
 
-You're ready to go! [http://pixofix-image.test/] in your browser.
+You're ready to go! http://127.0.0.1:8000/ in your browser.
+
+
 ## Login credentials
 ### login as Admin:
 - **Username:** `admin@example.com`
@@ -81,14 +98,6 @@ You're ready to go! [http://pixofix-image.test/] in your browser.
 - **Password:** `password`
 
 
-## Running Queue
-
-To run the queue for real-time notification, run:
-
-```
-php artisan queue:work
-```
-
 ## Running tests
 
 To run the Pest tests, run:
@@ -97,13 +106,9 @@ To run the Pest tests, run:
 php artisan test
 ```
 
+
 ## Credits
 
 🚀 Original work by Anik [@anikninja](https://www.github.com/anikninja)
 
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/anik89bd/)
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
