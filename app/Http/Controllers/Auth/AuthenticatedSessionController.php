@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Enums\RolesEnum;
+use Spatie\Permission\Traits\HasRoles;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -27,13 +29,30 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request): \Symfony\Component\HttpFoundation\Response
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // roles regulation section
+        $user = Auth::user();
+        $adminroles = [
+            RolesEnum::Admin,
+            RolesEnum::Employee
+        ];
+        $userroles = [
+            RolesEnum::User
+        ];
+
+        if ($user->hasRole($adminroles)){
+            return Inertia::location('/admin');
+        } 
+        else if ($user->hasRole($userroles)){
+            return Inertia::location('/dashboard');
+        }
+        else
+            return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

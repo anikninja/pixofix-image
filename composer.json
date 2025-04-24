@@ -3,16 +3,18 @@
     "name": "laravel/react-starter-kit",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": [
-        "laravel",
-        "framework"
-    ],
+    "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "filament/filament": "^3.3",
+        "filament/notifications": "^3.3",
+        "flowframe/laravel-trend": "^0.4.0",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "pusher/pusher-php-server": "^7.2",
+        "spatie/laravel-permission": "^6.17",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {
@@ -40,7 +42,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
