@@ -19,11 +19,42 @@ New Laravel application? make sure that your local machine has `PHP`, `Composer`
 
 Read Doc: [Installing PHP and the Laravel Installer](https://laravel.com/docs/12.x/installation#installing-php)
 
-Install the Laravel installer via Composer:
+### Installing PHP and the Laravel Installer
+
+macOS installer:
+
+```sh
+/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.4)"
+```
+
+Windows installer by Windows PowerShell:
+
+```sh
+# Run as administrator...
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.4'))
+```
+
+Linux installer:
+
+```sh
+/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.4)"
+```
+
+
+Already have PHP and Composer installed? then install the Laravel installer via Composer::
 
 ```sh
 composer global require laravel/installer
 ```
+
+### Installation Using Herd
+
+I recommend to [Install Laravel Herd](https://herd.laravel.com/) for local development environment.
+
+*Laravel Herd is considered the best for many due to its ability to simplify local development or test, providing a fast and convenient environment for building Laravel applications.*
+
+
+## Clone Repository
 
 Clone the repo locally:
 
@@ -74,19 +105,17 @@ Run database seeder:
 php artisan db:seed
 ```
 
-Run optimization:
-
-```sh
-php artisan optimize
-```
-
 Run server:
 
 ```sh
 composer run dev
 ```
 
-You're ready to go! http://127.0.0.1:8000/ in your browser.
+*Click on following `APP_URL` in your Terminal.*
+
+N:B: If you are using **Laravel Herd**, then you should set your Project Name: `pixofix-image`
+
+Change the `APP_URL` value `http://pixofix-image.test` in your local `.env` file.
 
 
 ## Login credentials
